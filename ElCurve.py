@@ -47,13 +47,14 @@ class Point:
         return Point(x, y)
 
     def __mul__(self, n):
-        result = Point_E.copy()
-        point = self.copy()
-        while n > 0:
-            if n % 2 == 1:
+        result = copy.deepcopy(Point_E)
+        point = copy.deepcopy(self)
+        n_tmp = copy.deepcopy(n)
+        while n_tmp > 0:
+            if n_tmp % 2 == 1:
                 result += point
             point += point
-            n //= 2
+            n_tmp //= 2
         return result
 
     def __rmul__(self, n):

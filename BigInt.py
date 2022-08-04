@@ -4,7 +4,9 @@ import random
 
 class BigInt:
     BASE = 10
-    # working with numbers with base BASE
+
+    # working with numbers with base BASE = 10.
+    # Many methods' code should be changed in order to work with other bases
     def __init__(self, init_value=None):
 
         self.is_pos = True  # 0 is positive too
@@ -13,17 +15,17 @@ class BigInt:
         if init_value is not None:
 
             assert type(init_value) == str or type(init_value) == int, 'Initial_value must be int or str'
-            # should be changed if BASE != 10
-            init_value = str(init_value)
+            # should be changed if BASE != 10, as well as the whole implementation
+            init_value_str = str(init_value)
             right_border = 0
-            if init_value[0] == '-':
+            if init_value_str[0] == '-':
                 self.is_pos = False
                 right_border = 1
-            elif init_value[0] == '+':
+            elif init_value_str[0] == '+':
                 right_border = 1
 
-            for x in range(len(init_value) - 1, right_border - 1, -1):
-                self.digits.append(int(init_value[x]))
+            for x in range(len(init_value_str) - 1, right_border - 1, -1):
+                self.digits.append(int(init_value_str[x]))
 
     def __str__(self):
         res = ''
@@ -168,7 +170,7 @@ class BigInt:
             for j in range(len(self.digits)):
                 fullProd = self.digits[j] * other.digits[i] + pCarry
                 blocks[i].digits.append(fullProd % self.BASE)
-                pCarry = fullProd//self.BASE
+                pCarry = fullProd // self.BASE
 
             if pCarry > 0:
                 blocks[i].digits.append(pCarry)
@@ -219,19 +221,19 @@ class BigInt:
             firstStep = False
             quot = subst.__simpleDiv(absOther)
             # divRes.digits.insert(0, quot)
-            for j in range(len(quot.digits) -1, -1, -1):
+            for j in range(len(quot.digits) - 1, -1, -1):
                 divRes.digits.insert(0, quot.digits[j])
 
-            subst = subst - absOther*quot
+            subst = subst - absOther * quot
 
             if subst == 0:
                 subst.digits.remove(0)
 
         if (not self.is_pos) and (not other.is_pos) and \
-            (subst != 0) and len(subst.digits) != 0:
+                (subst != 0) and len(subst.digits) != 0:
             divRes = divRes + 1
         if (not self.is_pos) and other.is_pos and \
-            (subst != 0) and len(subst.digits) != 0:
+                (subst != 0) and len(subst.digits) != 0:
             divRes = divRes - 1
         if divRes.digits[0] == 0:
             divRes.is_pos = True
@@ -258,9 +260,9 @@ class BigInt:
         if power == 1:
             return self
         if power % 2 == 0:
-            temp = self**(power//2)
-            return temp*temp
-        return self**(power - 1)*self
+            temp = self ** (power // 2)
+            return temp * temp
+        return self ** (power - 1) * self
 
     def powWithMod(self, power, mod):
         if self == 0:
@@ -270,9 +272,9 @@ class BigInt:
         if power == 1:
             return self % mod
         if power % 2 == 0:
-            temp = self.powWithMod(power//2, mod)
-            return (temp*temp) % mod
-        return (self.powWithMod(power - 1, mod)*self) % mod
+            temp = self.powWithMod(power // 2, mod)
+            return (temp * temp) % mod
+        return (self.powWithMod(power - 1, mod) * self) % mod
 
     def __abs__(self):
         if self < 0:
@@ -281,8 +283,6 @@ class BigInt:
 
     def __int__(self):
         return int(self.__str__())
-
-
 
     def addWithMod(self, other, mod):
         return (self + other) % mod
@@ -306,8 +306,8 @@ class BigInt:
         if obj < 4:
             return BigInt(1)
 
-        res = BigInt.sqrt((obj - obj % 4) / 4)*2
-        if obj < (res + 1)**2:
+        res = BigInt.sqrt((obj - obj % 4) / 4) * 2
+        if obj < (res + 1) ** 2:
             return res
         return res + 1
 
@@ -315,14 +315,14 @@ class BigInt:
     def gcd(a, b):
         a = BigInt.__fromIntToBigInt(a)
         b = BigInt.__fromIntToBigInt(b)
-        a = abs(a)
-        b = abs(b)
+        a_tmp = abs(a)
+        b_tmp = abs(b)
 
-        while b != 0:
-            a %= b
-            a, b = b, a
+        while b_tmp != 0:
+            a_tmp %= b_tmp
+            a_tmp, b_tmp = b_tmp, a_tmp
 
-        return a
+        return a_tmp
 
     @staticmethod
     def rand(upper):
@@ -331,7 +331,7 @@ class BigInt:
         if upper < max_int:
             res = BigInt(random.randint(1, upper))
         else:
-            res = BigInt(random.randint(1, max_int))*upper / max_int
+            res = BigInt(random.randint(1, max_int)) * upper / max_int
         res.__clearZeros()
         return res
 
@@ -342,19 +342,15 @@ class BigInt:
             obj = BigInt(obj)
         return obj
 
-
     def __clearZeros(self):
         while len(self.digits) > 0 and self.digits[-1] == 0:
             self.digits.pop()
 
     def __simpleDiv(self, other):
         res = BigInt(0)
-        a = self
-        b = other
+        a = copy.deepcopy(self)
+        b = copy.deepcopy(other)
         while a >= b:
             a = a - b
             res = res + 1
         return res
-
-
-
