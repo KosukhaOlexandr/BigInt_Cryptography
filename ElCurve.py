@@ -1,5 +1,5 @@
 from BigInt import BigInt
-
+import copy
 
 # secp224k1
 class Point:

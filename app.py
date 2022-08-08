@@ -163,7 +163,7 @@ def sqrt_cipolla(num, p):
                (a[0] * b[1] % p_tmp + a[1] * b[0] % p_tmp) % p_tmp
 
     res = (BigInt(1), BigInt(0))
-    a0 = (a, BigInt(1))
+    a0 = (a_s, BigInt(1))
     pw = (p_tmp + 1) / 2
     while pw != 0:
         if pw % 2 != 0:
@@ -233,7 +233,7 @@ print(s[0], s[1])
 
 s = is_prime_solovay_strassen(12374869128373, 100)
 print(s)
-"""
+
 message = 10*Point_G
 
 print(f"message: {message}")
@@ -243,4 +243,4 @@ ciphertext = ElGamal.encrypt(pk, message)
 received_message = ElGamal.decrypt(sk, ciphertext)
 
 print(f"received_message: {received_message}")
-"""
+
