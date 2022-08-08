@@ -15,20 +15,20 @@ def log_bsgs(a_log, g, mod):
     g_tmp %= mod_tmp
     m = BigInt.sqrt(mod_tmp) + 1
 
-    a0 = a_tmp.powWithMod(m, mod_tmp)
+    a0 = a_tmp.pow_with_mod(m, mod_tmp)
     tmp = a0
     l1 = {1: a0}
     for j in range(2, int(m + 1)):
-        tmp = tmp.multWithMod(a0, mod_tmp)
+        tmp = tmp.mult_with_mod(a0, mod_tmp)
         l1.update({j: tmp})
 
-    tmp = g_tmp.multWithMod(a_tmp.powWithMod(mod_tmp - m, mod_tmp), mod_tmp)
+    tmp = g_tmp.mult_with_mod(a_tmp.pow_with_mod(mod_tmp - m, mod_tmp), mod_tmp)
 
     for i in range(int(m) - 1, -1, -1):
         for key, value in l1.items():
             if value == tmp:
                 return (m * key + i) % mod_tmp
-        tmp = tmp.multWithMod(a_tmp, mod_tmp)
+        tmp = tmp.mult_with_mod(a_tmp, mod_tmp)
 
     return None
 
@@ -101,7 +101,7 @@ def legendre(a_l, p_l):
         return None
     if a_tmp % p_tmp == 0:
         return 0
-    if a_tmp.powWithMod((p_tmp - 1) // 2, p_tmp) == 1:
+    if a_tmp.pow_with_mod((p_tmp - 1) // 2, p_tmp) == 1:
         return 1
     return -1
 
@@ -190,7 +190,7 @@ def is_prime_solovay_strassen(num, accuracy):
         a_p = BigInt.rand(num - 1)
         if BigInt.gcd(a_p, num) > 1:
             return False
-        if a.powWithMod((num - 1) / 2, num) != jacobi(a, num) % num:
+        if a.pow_with_mod((num - 1) / 2, num) != jacobi(a, num) % num:
             return False
 
     return True
@@ -200,7 +200,9 @@ def is_prime_solovay_strassen(num, accuracy):
 
 
 # 11^x = 13 mod 127
-b = log_bsgs(7, 156, 1237)
+b = log_bsgs(11, 13, 127)
+a = BigInt(11)
+print(a.pow_with_mod(107, 127))
 print(b)
 
 # 87619876495133

@@ -36,14 +36,14 @@ class BigInt:
         return res
 
     def __eq__(self, other):
-        other = BigInt.__fromIntToBigInt(other)
+        other = BigInt.__from_int_to_BigInt(other)
         return self.is_pos == other.is_pos and self.digits == other.digits
 
     def __ne__(self, other):
         return not self == other
 
     def __lt__(self, other):
-        other = BigInt.__fromIntToBigInt(other)
+        other = BigInt.__from_int_to_BigInt(other)
         if self.is_pos != other.is_pos:
             return not self.is_pos
 
@@ -80,7 +80,7 @@ class BigInt:
         return self
 
     def __add__(self, other):
-        other = BigInt.__fromIntToBigInt(other)
+        other = BigInt.__from_int_to_BigInt(other)
         if self.is_pos == other.is_pos:
             res = BigInt()
             res.is_pos = self.is_pos
@@ -109,7 +109,7 @@ class BigInt:
         return other - (- self)
 
     def __sub__(self, other):
-        other = BigInt.__fromIntToBigInt(other)
+        other = BigInt.__from_int_to_BigInt(other)
         if self == other:
             return BigInt(0)
 
@@ -143,7 +143,7 @@ class BigInt:
                 res.is_pos = False
             else:
                 res = -(other - self)
-            res.__clearZeros()
+            res.__clear_zeros()
             return res
             # clearZeros
 
@@ -152,7 +152,7 @@ class BigInt:
         return -(-self + other)
 
     def __mul__(self, other):
-        other = BigInt.__fromIntToBigInt(other)
+        other = BigInt.__from_int_to_BigInt(other)
         if self == 0 or other == 0:
             return BigInt(0)
 
@@ -183,7 +183,7 @@ class BigInt:
         return res
 
     def __floordiv__(self, other):
-        other = BigInt.__fromIntToBigInt(other)
+        other = BigInt.__from_int_to_BigInt(other)
         if other == 0:
             raise ZeroDivisionError
         if self == 0:
@@ -213,13 +213,13 @@ class BigInt:
                 i -= 1
                 added += 1
 
-                subst.__clearZeros()
+                subst.__clear_zeros()
                 if added > 1 and (not firstStep):
                     divRes.digits.insert(0, 0)
                 cond = subst < absOther and i >= 0
 
             firstStep = False
-            quot = subst.__simpleDiv(absOther)
+            quot = subst.__simple_div(absOther)
             # divRes.digits.insert(0, quot)
             for j in range(len(quot.digits) - 1, -1, -1):
                 divRes.digits.insert(0, quot.digits[j])
@@ -240,7 +240,7 @@ class BigInt:
         return divRes
 
     def __mod__(self, other):
-        other = BigInt.__fromIntToBigInt(other)
+        other = BigInt.__from_int_to_BigInt(other)
         if other == 0:
             raise ZeroDivisionError
 
@@ -264,7 +264,7 @@ class BigInt:
             return temp * temp
         return self ** (power - 1) * self
 
-    def powWithMod(self, power, mod):
+    def pow_with_mod(self, power, mod):
         if self == 0:
             return BigInt(1)
         if power == 0:
@@ -272,9 +272,9 @@ class BigInt:
         if power == 1:
             return self % mod
         if power % 2 == 0:
-            temp = self.powWithMod(power // 2, mod)
+            temp = self.pow_with_mod(power // 2, mod)
             return (temp * temp) % mod
-        return (self.powWithMod(power - 1, mod) * self) % mod
+        return (self.pow_with_mod(power - 1, mod) * self) % mod
 
     def __abs__(self):
         if self < 0:
@@ -284,21 +284,21 @@ class BigInt:
     def __int__(self):
         return int(self.__str__())
 
-    def addWithMod(self, other, mod):
+    def add_with_mod(self, other, mod):
         return (self + other) % mod
 
-    def subsWithMod(self, other, mod):
+    def subs_with_mod(self, other, mod):
         return (self - other) % mod
 
-    def multWithMod(self, other, mod):
+    def mult_with_mod(self, other, mod):
         return (self * other) % mod
 
-    def divWithMod(self, other, mod):
+    def div_with_mod(self, other, mod):
         return (self // other) % mod
 
     @staticmethod
     def sqrt(obj):
-        obj = BigInt.__fromIntToBigInt(obj)
+        obj = BigInt.__from_int_to_BigInt(obj)
         if not obj.is_pos:
             raise ValueError("The number should be positive")
         if obj == 0:
@@ -313,8 +313,8 @@ class BigInt:
 
     @staticmethod
     def gcd(a, b):
-        a = BigInt.__fromIntToBigInt(a)
-        b = BigInt.__fromIntToBigInt(b)
+        a = BigInt.__from_int_to_BigInt(a)
+        b = BigInt.__from_int_to_BigInt(b)
         a_tmp = abs(a)
         b_tmp = abs(b)
 
@@ -326,27 +326,27 @@ class BigInt:
 
     @staticmethod
     def rand(upper):
-        upper = BigInt.__fromIntToBigInt(upper)
+        upper = BigInt.__from_int_to_BigInt(upper)
         max_int = (1 << 63) - 1
         if upper < max_int:
             res = BigInt(random.randint(1, upper))
         else:
             res = BigInt(random.randint(1, max_int)) * upper / max_int
-        res.__clearZeros()
+        res.__clear_zeros()
         return res
 
     @staticmethod
-    def __fromIntToBigInt(obj):
+    def __from_int_to_BigInt(obj):
         assert type(obj) == BigInt or type(obj) == int, 'The element should be int or BigInt'
         if type(obj) == int:
             obj = BigInt(obj)
         return obj
 
-    def __clearZeros(self):
+    def __clear_zeros(self):
         while len(self.digits) > 0 and self.digits[-1] == 0:
             self.digits.pop()
 
-    def __simpleDiv(self, other):
+    def __simple_div(self, other):
         res = BigInt(0)
         a = copy.deepcopy(self)
         b = copy.deepcopy(other)
